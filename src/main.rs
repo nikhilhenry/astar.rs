@@ -1,5 +1,3 @@
-use eframe::egui::{Context, PointerState, Sense};
-use eframe::epaint::Color32;
 use eframe::{egui, Frame};
 
 fn main() {
