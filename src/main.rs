@@ -16,7 +16,6 @@ enum NodeType {
     Goal,
     Obstacle,
     Start,
-    Traversable,
 }
 
 #[derive(Clone)]
@@ -29,7 +28,6 @@ impl Node {
             NodeType::Goal => egui::Color32::LIGHT_GREEN,
             NodeType::Obstacle => egui::Color32::LIGHT_RED,
             NodeType::Start => egui::Color32::LIGHT_BLUE,
-            NodeType::Traversable => egui::Color32::TRANSPARENT,
         };
         self.color = color;
     }
