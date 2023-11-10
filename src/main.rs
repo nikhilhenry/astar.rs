@@ -1,3 +1,4 @@
+use eframe::egui::{Context, Sense};
 use eframe::{egui, Frame};
 
 fn main() {
@@ -57,7 +58,7 @@ impl eframe::App for MyApp {
                 (window_size.x - 20.0) / self.width as f32,
                 (window_size.y - 20.0) / self.height as f32,
             );
-            let (res, painter) = ui.allocate_painter(window_size, Sense::click());
+            let (_, painter) = ui.allocate_painter(window_size, Sense::click());
             for y in 0..self.height {
                 for x in 0..self.width {
                     let x_coord = x as f32 * rect_size.x + 10.0;
@@ -69,7 +70,6 @@ impl eframe::App for MyApp {
                     ui.allocate_ui_at_rect(rect, |ui| {
                         let (_, res) = ui.allocate_exact_size(rect_size, Sense::click());
                         if res.clicked() {
-                            println!("clicked {x} {y}");
                             self.grid[x][y].set_color();
                         }
                     });
