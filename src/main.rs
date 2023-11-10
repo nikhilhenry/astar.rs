@@ -40,7 +40,7 @@ struct MyApp {
     stroke: egui::Stroke,
     rounding: egui::Rounding,
     grid: Vec<Vec<Node>>,
-    node_type: NodeType,
+    node_cursor_type: NodeType,
 }
 
 impl MyApp {
@@ -53,7 +53,7 @@ impl MyApp {
             stroke: egui::Stroke::new(1.0, egui::Color32::LIGHT_RED),
             rounding: egui::Rounding::default(),
             grid,
-            node_type: NodeType::Start,
+            node_cursor_type: NodeType::Start,
         }
     }
 }
@@ -67,15 +67,19 @@ impl eframe::App for MyApp {
                     ui.label("Settings");
                     ui.end_row();
                     egui::ComboBox::from_label("Select Node Type")
-                        .selected_text(format!("{:?}", self.node_type))
+                        .selected_text(format!("{:?}", self.node_cursor_type))
                         .show_ui(ui, |ui| {
-                            ui.selectable_value(&mut self.node_type, NodeType::Start, "Start");
                             ui.selectable_value(
-                                &mut self.node_type,
+                                &mut self.node_cursor_type,
+                                NodeType::Start,
+                                "Start",
+                            );
+                            ui.selectable_value(
+                                &mut self.node_cursor_type,
                                 NodeType::Obstacle,
                                 "Obstacle",
                             );
-                            ui.selectable_value(&mut self.node_type, NodeType::Goal, "Goal");
+                            ui.selectable_value(&mut self.node_cursor_type, NodeType::Goal, "Goal");
                         });
                     ui.end_row();
                     ui.button("Find Path")
