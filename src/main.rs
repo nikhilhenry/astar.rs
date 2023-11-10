@@ -16,7 +16,11 @@ fn main() {
 struct Node {
     color: egui::Color32,
 }
-
+impl Node {
+    fn set_color(&mut self) {
+        self.color = egui::Color32::LIGHT_RED;
+    }
+}
 impl Default for Node {
     fn default() -> Self {
         Node {
@@ -35,6 +39,7 @@ struct MyApp {
 impl MyApp {
     fn build(width: usize, height: usize) -> Self {
         let grid = vec![vec![Node::default(); width]; height];
+
         MyApp {
             width,
             height,
@@ -61,13 +66,13 @@ impl eframe::App for MyApp {
                     let y_coord = y as f32 * rect_size.y + 10.0;
                     let pos = egui::pos2(x_coord, y_coord);
                     let rect = egui::Rect::from_min_size(pos, rect_size);
-                    painter.rect_filled(rect, self.rounding, self.grid[0][0].color);
+                    painter.rect_filled(rect, self.rounding, self.grid[x][y].color);
                     painter.rect_stroke(rect, self.rounding, self.stroke);
                     ui.allocate_ui_at_rect(rect, |ui| {
                         let (_, res) = ui.allocate_exact_size(rect_size, Sense::click());
                         if res.clicked() {
                             println!("clicked {x} {y}");
-                            self.grid[x][y].color = Color32::LIGHT_RED;
+                            self.grid[x][y].set_color();
                         }
                     });
                 }
