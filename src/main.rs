@@ -55,7 +55,7 @@ impl MyApp {
         MyApp {
             width,
             height,
-            stroke: egui::Stroke::new(1.0, egui::Color32::LIGHT_RED),
+            stroke: egui::Stroke::new(1.0, egui::Color32::DARK_GRAY),
             rounding: egui::Rounding::default(),
             grid,
             node_cursor_type: NodeType::Start,
