@@ -11,6 +11,12 @@ fn main() {
     .expect("failed to initialise app")
 }
 
+enum Type {
+    Goal,
+    Obstacle,
+    Start,
+}
+
 #[derive(Clone)]
 struct Node {
     color: egui::Color32,
@@ -50,15 +56,24 @@ impl MyApp {
 }
 
 impl eframe::App for MyApp {
-    fn update(&mut self, ctx: &Context, frame: &mut Frame) {
+    fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+        egui::SidePanel::right("my_left_panel").show(ctx, |ui| {
+            ui.with_layout(
+                egui::Layout::top_down_justified(egui::Align::Center),
+                |ui| {
+                    ui.label("Settings");
+                    ui.button("Find Path")
+                },
+            )
+        });
         egui::CentralPanel::default().show(ctx, |ui| {
-            let window_size = frame.info().window_info.size;
+            let panel_size = ui.available_size();
             // compute the rect_size
             let rect_size = egui::Vec2::new(
-                (window_size.x - 20.0) / self.width as f32,
-                (window_size.y - 20.0) / self.height as f32,
+                (panel_size.x - 20.0) / self.width as f32,
+                (panel_size.y - 20.0) / self.height as f32,
             );
-            let (_, painter) = ui.allocate_painter(window_size, Sense::click());
+            let (_, painter) = ui.allocate_painter(panel_size, Sense::click());
             for y in 0..self.height {
                 for x in 0..self.width {
                     let x_coord = x as f32 * rect_size.x + 10.0;
