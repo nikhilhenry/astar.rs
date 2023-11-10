@@ -16,6 +16,7 @@ enum NodeType {
     Goal,
     Obstacle,
     Start,
+    Traversable,
 }
 
 #[derive(Clone)]
@@ -23,8 +24,14 @@ struct Node {
     color: egui::Color32,
 }
 impl Node {
-    fn set_color(&mut self) {
-        self.color = egui::Color32::LIGHT_RED;
+    fn set_type(&mut self, node_type: &NodeType) {
+        let color = match node_type {
+            NodeType::Goal => egui::Color32::LIGHT_GREEN,
+            NodeType::Obstacle => egui::Color32::LIGHT_RED,
+            NodeType::Start => egui::Color32::LIGHT_BLUE,
+            NodeType::Traversable => egui::Color32::TRANSPARENT,
+        };
+        self.color = color;
     }
 }
 impl Default for Node {
@@ -105,7 +112,7 @@ impl eframe::App for MyApp {
                     ui.allocate_ui_at_rect(rect, |ui| {
                         let (_, res) = ui.allocate_exact_size(rect_size, Sense::click());
                         if res.clicked() {
-                            self.grid[x][y].set_color();
+                            self.grid[x][y].set_type(&self.node_cursor_type);
                         }
                     });
                 }
