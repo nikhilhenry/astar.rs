@@ -1,5 +1,7 @@
-use eframe::egui::{Context, Sense};
+use eframe::egui::{Color32, Context, Sense};
 use eframe::{egui, Frame};
+use path_finding::node::{Node, NodeType};
+use path_finding::Grid;
 
 fn main() {
     let options = eframe::NativeOptions::default();
@@ -12,53 +14,45 @@ fn main() {
 }
 
 #[derive(Debug, PartialEq)]
-enum NodeType {
+enum CursorType {
     Goal,
     Obstacle,
     Start,
 }
 
-#[derive(Clone)]
-struct Node {
-    color: egui::Color32,
+trait NodeColor {
+    fn get_color(&self) -> egui::Color32;
 }
-impl Node {
-    fn set_type(&mut self, node_type: &NodeType) {
-        let color = match node_type {
-            NodeType::Goal => egui::Color32::LIGHT_GREEN,
+
+impl NodeColor for Node {
+    fn get_color(&self) -> Color32 {
+        match self.node_type {
             NodeType::Obstacle => egui::Color32::LIGHT_RED,
-            NodeType::Start => egui::Color32::LIGHT_BLUE,
-        };
-        self.color = color;
-    }
-}
-impl Default for Node {
-    fn default() -> Self {
-        Node {
-            color: egui::Color32::TRANSPARENT,
+            NodeType::Traversable => egui::Color32::TRANSPARENT,
+            NodeType::Traversed => egui::Color32::DARK_GRAY,
         }
     }
 }
+
 struct MyApp {
     height: usize,
     width: usize,
     stroke: egui::Stroke,
     rounding: egui::Rounding,
-    grid: Vec<Vec<Node>>,
-    node_cursor_type: NodeType,
+    grid: Grid,
+    cursor_type: CursorType,
 }
 
 impl MyApp {
     fn build(width: usize, height: usize) -> Self {
-        let grid = vec![vec![Node::default(); width]; height];
-
+        let grid = Grid::new(height, width);
         MyApp {
             width,
             height,
             stroke: egui::Stroke::new(1.0, egui::Color32::DARK_GRAY),
             rounding: egui::Rounding::default(),
             grid,
-            node_cursor_type: NodeType::Start,
+            cursor_type: CursorType::Start,
         }
     }
 }
@@ -72,19 +66,15 @@ impl eframe::App for MyApp {
                     ui.label("Settings");
                     ui.end_row();
                     egui::ComboBox::from_label("Select Node Type")
-                        .selected_text(format!("{:?}", self.node_cursor_type))
+                        .selected_text(format!("{:?}", self.cursor_type))
                         .show_ui(ui, |ui| {
+                            ui.selectable_value(&mut self.cursor_type, CursorType::Start, "Start");
                             ui.selectable_value(
-                                &mut self.node_cursor_type,
-                                NodeType::Start,
-                                "Start",
-                            );
-                            ui.selectable_value(
-                                &mut self.node_cursor_type,
-                                NodeType::Obstacle,
+                                &mut self.cursor_type,
+                                CursorType::Obstacle,
                                 "Obstacle",
                             );
-                            ui.selectable_value(&mut self.node_cursor_type, NodeType::Goal, "Goal");
+                            ui.selectable_value(&mut self.cursor_type, CursorType::Goal, "Goal");
                         });
                     ui.end_row();
                     ui.button("Find Path")
@@ -105,12 +95,23 @@ impl eframe::App for MyApp {
                     let y_coord = y as f32 * rect_size.y + 10.0;
                     let pos = egui::pos2(x_coord, y_coord);
                     let rect = egui::Rect::from_min_size(pos, rect_size);
-                    painter.rect_filled(rect, self.rounding, self.grid[x][y].color);
+                    let mut color = self.grid.get_node_at(x, y).get_color();
+                    if self.grid.is_goal(x, y) {
+                        color = egui::Color32::LIGHT_GREEN;
+                    }
+                    if self.grid.is_start(x, y) {
+                        color = egui::Color32::LIGHT_BLUE;
+                    }
+                    painter.rect_filled(rect, self.rounding, color);
                     painter.rect_stroke(rect, self.rounding, self.stroke);
                     ui.allocate_ui_at_rect(rect, |ui| {
                         let (_, res) = ui.allocate_exact_size(rect_size, Sense::click());
                         if res.clicked() {
-                            self.grid[x][y].set_type(&self.node_cursor_type);
+                            match self.cursor_type {
+                                CursorType::Goal => self.grid.set_goal(x, y),
+                                CursorType::Obstacle => self.grid.set_obstacle(x, y),
+                                CursorType::Start => self.grid.set_start(x, y),
+                            }
                         }
                     });
                 }
