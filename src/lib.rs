@@ -36,7 +36,7 @@ impl Grid {
 
     pub fn set_obstacle(&mut self, x: usize, y: usize) {
         let pos = Position::new(x as i32, y as i32);
-        let node = self.nodes.entry(pos).and_modify(|node| node.set_obstacle());
+        self.nodes.entry(pos).and_modify(|node| node.set_obstacle());
     }
 
     pub fn set_start(&mut self, x: usize, y: usize) {
