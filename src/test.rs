@@ -32,7 +32,7 @@ fn correct_neighbours() {
     let grid = Grid::new(5, 5);
     assert_eq!(
         vec![Position::new(1, 0), Position::new(0, 1)],
-        grid.get_neighbours(Position::new(0, 0))
+        grid.get_neighbours(&Position::new(0, 0))
     );
     assert_eq!(
         vec![
@@ -41,6 +41,6 @@ fn correct_neighbours() {
             Position::new(1, 0),
             Position::new(1, 2),
         ],
-        grid.get_neighbours(Position::new(1, 1))
+        grid.get_neighbours(&Position::new(1, 1))
     );
 }

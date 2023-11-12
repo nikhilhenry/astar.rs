@@ -7,6 +7,12 @@ pub struct Position {
     pub y: i32,
 }
 
+pub fn euclid_distance(from: &Position, to: &Position) -> usize {
+    let x_dist = (from.x - to.x).abs();
+    let y_dist = (from.y - to.y).abs();
+    (x_dist + y_dist) as usize
+}
+
 impl Position {
     pub const fn new(x: i32, y: i32) -> Self {
         Position { x, y }

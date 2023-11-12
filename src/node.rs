@@ -1,4 +1,6 @@
+use crate::position::Position;
 use std::cmp::Ordering;
+
 pub enum NodeType {
     Obstacle,
     Traversable,
@@ -7,10 +9,11 @@ pub enum NodeType {
 
 pub struct Node {
     pub node_type: NodeType,
-    h_cost: usize,
-    g_cost: usize,
-    f_cost: usize,
+    pub h_cost: usize,
+    pub g_cost: usize,
+    pub f_cost: usize,
     pub index: usize,
+    pub parent: Option<Position>,
 }
 
 impl Node {
@@ -23,10 +26,11 @@ impl Default for Node {
     fn default() -> Self {
         Node {
             node_type: NodeType::Traversable,
-            h_cost: 0,
-            g_cost: 0,
-            f_cost: 0,
-            index: 0,
+            h_cost: usize::MAX,
+            g_cost: usize::MAX,
+            f_cost: usize::MAX,
+            index: usize::MAX,
+            parent: None,
         }
     }
 }

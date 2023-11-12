@@ -77,7 +77,9 @@ impl eframe::App for MyApp {
                             ui.selectable_value(&mut self.cursor_type, CursorType::Goal, "Goal");
                         });
                     ui.end_row();
-                    ui.button("Find Path")
+                    if ui.button("Find Path").clicked() {
+                        self.grid.solve();
+                    }
                 },
             )
         });
