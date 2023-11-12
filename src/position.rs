@@ -24,6 +24,17 @@ impl Add<&Position> for &Position {
     }
 }
 
+impl Add<&Position> for Position {
+    type Output = Position;
+
+    fn add(self, rhs: &Position) -> Self::Output {
+        Position {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
 impl Eq for Position {}
 
 impl PartialEq<Self> for Position {
