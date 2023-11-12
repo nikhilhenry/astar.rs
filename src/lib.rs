@@ -44,6 +44,10 @@ impl Grid {
         }
     }
 
+    pub fn is_ready(&self) -> bool {
+        self.goal.is_some() && self.start.is_some()
+    }
+
     pub fn get_node_at(&self, x: usize, y: usize) -> Ref<Node> {
         let pos = Position::new(x as i32, y as i32);
         self.nodes
