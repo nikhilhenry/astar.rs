@@ -48,6 +48,7 @@ struct MyApp {
     frame_history: FrameHistory,
     new_height: usize,
     new_width: usize,
+    show_cost: bool,
 }
 
 impl MyApp {
@@ -63,6 +64,7 @@ impl MyApp {
             frame_history: FrameHistory::default(),
             new_height: height,
             new_width: width,
+            show_cost: true,
         }
     }
 }
@@ -109,6 +111,8 @@ impl eframe::App for MyApp {
                     ui.add_space(WIDGET_SPACING);
                     ui.checkbox(&mut self.grid.allow_diagonal, "Move Diagonally");
                     ui.add_space(WIDGET_SPACING);
+                    ui.checkbox(&mut self.show_cost, "Show Cost");
+                    ui.add_space(WIDGET_SPACING);
                     ui.add_enabled_ui(self.grid.is_ready(), |ui| {
                         if ui.button("Find Path").clicked() {
                             self.grid.solve();
@@ -143,6 +147,24 @@ impl eframe::App for MyApp {
                     painter.rect_filled(rect, self.rounding, color);
                     painter.rect_stroke(rect, self.rounding, self.stroke);
                     ui.allocate_ui_at_rect(rect, |ui| {
+                        ui.add_visible_ui(self.show_cost, |ui| {
+                            let should_display_cost = self.grid.get_node_at(x, y).node_type
+                                != NodeType::Traversable
+                                && self.grid.get_node_at(x, y).node_type != NodeType::Obstacle;
+                            if should_display_cost {
+                                let node = self.grid.get_node_at(x, y);
+                                let f_cost = node.f_cost;
+                                let g_cost = node.g_cost;
+                                let h_cost = node.h_cost;
+                                ui.colored_label(egui::Color32::BLACK, format!("{g_cost}"));
+                                ui.label(
+                                    egui::RichText::new(format!("{f_cost}"))
+                                        .font(egui::FontId::proportional(20.0))
+                                        .color(egui::Color32::BLACK),
+                                );
+                                ui.colored_label(egui::Color32::BLACK, format!("{h_cost}"));
+                            }
+                        });
                         let (_, res) = ui.allocate_exact_size(rect_size, Sense::click());
                         if res.clicked() {
                             match self.cursor_type {
