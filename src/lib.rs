@@ -25,6 +25,13 @@ const OFFSETS: [Position; 4] = [
     Position::new(0, 1),  // bottom
 ];
 
+const DIAG_OFFSETS: [Position; 4] = [
+    Position::new(1, -1),  // top right
+    Position::new(-1, -1), // top left
+    Position::new(1, 1),   // bottom right
+    Position::new(-1, 1),  // bottom left
+];
+
 impl Grid {
     pub fn new(height: usize, width: usize) -> Self {
         let mut nodes = HashMap::new();
@@ -61,12 +68,24 @@ impl Grid {
         pos.x >= 0 && pos.x < self.width as i32 && pos.y >= 0 && pos.y < self.height as i32
     }
 
-    fn get_neighbours(&self, me: &Position) -> Vec<Position> {
+    fn get_neighbours(&self, me: &Position) -> Vec<(Position, usize)> {
         OFFSETS
             .iter()
             .map(|offset| *&me + offset)
             .filter(|pos| self.is_valid_pos(&pos))
+            .map(|pos| (pos, 10))
             .collect()
+    }
+    fn get_neighbours_diag(&self, me: &Position) -> Vec<(Position, usize)> {
+        let mut adjacent_neighbours = self.get_neighbours(me);
+        let mut diag_neighbours: Vec<_> = DIAG_OFFSETS
+            .iter()
+            .map(|offset| *&me + offset)
+            .filter(|pos| self.is_valid_pos(&pos))
+            .map(|pos| (pos, 14))
+            .collect();
+        adjacent_neighbours.append(&mut diag_neighbours);
+        adjacent_neighbours
     }
 
     fn get_index_from_pos(&self, pos: &Position) -> usize {
@@ -155,12 +174,12 @@ impl Grid {
                 break;
             }
             let current_pos = self.get_pos_from_index(current_node.borrow().index);
-            for pos in self.get_neighbours(&current_pos) {
+            for (pos, cost) in self.get_neighbours_diag(&current_pos) {
                 let neighbour = self.nodes.get(&pos).expect("invalid position");
                 if neighbour.borrow().node_type == NodeType::Obstacle {
                     continue;
                 }
-                let temp_g_cost = current_node.borrow().g_cost + 10;
+                let temp_g_cost = current_node.borrow().g_cost + cost;
                 if temp_g_cost > neighbour.borrow().g_cost {
                     continue; // this way would have been a worse path
                 }
