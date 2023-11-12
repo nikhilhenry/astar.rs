@@ -157,6 +157,9 @@ impl Grid {
             let current_pos = self.get_pos_from_index(current_node.borrow().index);
             for pos in self.get_neighbours(&current_pos) {
                 let neighbour = self.nodes.get(&pos).expect("invalid position");
+                if neighbour.borrow().node_type == NodeType::Obstacle {
+                    continue;
+                }
                 let temp_g_cost = current_node.borrow().g_cost + 10;
                 if temp_g_cost > neighbour.borrow().g_cost {
                     continue; // this way would have been a worse path
