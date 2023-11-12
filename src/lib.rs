@@ -107,7 +107,6 @@ impl Grid {
         node.borrow_mut().node_type = NodeType::Obstacle;
 
         if let Some(pos) = parent {
-            println!("parent at {:?}", pos);
             self.trace_path(pos)
         }
     }
