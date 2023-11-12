@@ -5,16 +5,18 @@ use crate::node::Node;
 use crate::position::Position;
 use std::collections::HashMap;
 pub struct Grid {
+    height: usize,
+    width: usize,
     nodes: HashMap<Position, Node>,
     goal: Option<Position>,
     start: Option<Position>,
 }
 
 impl Grid {
-    pub fn new(height: usize, length: usize) -> Self {
+    pub fn new(height: usize, width: usize) -> Self {
         let mut nodes = HashMap::new();
         for y in 0..height {
-            for x in 0..length {
+            for x in 0..width {
                 let pos = Position::new(x as i32, y as i32);
                 let mut node = Node::default();
                 node.index = height * y + x;
@@ -22,6 +24,8 @@ impl Grid {
             }
         }
         Grid {
+            height,
+            width,
             nodes,
             goal: None,
             start: None,
@@ -32,6 +36,10 @@ impl Grid {
         let pos = Position::new(x as i32, y as i32);
         let node = self.nodes.get(&pos);
         node.expect(&*format!("{:?} is invalid", pos))
+    }
+
+    pub fn is_valid_pos(&self, pos: &Position) -> bool {
+        pos.x >= 0 && pos.x < self.width as i32 && pos.y >= 0 && pos.y < self.height as i32
     }
 
     pub fn set_obstacle(&mut self, x: usize, y: usize) {

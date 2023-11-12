@@ -3,15 +3,12 @@ use std::ops::Add;
 
 #[derive(Hash, Debug)]
 pub struct Position {
-    x: i32,
-    y: i32,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl Position {
-    fn is_valid(&self) -> bool {
-        self.x >= 0 && self.x < 10 && self.y >= 0 && self.y < 10
-    }
-    pub(crate) fn new(x: i32, y: i32) -> Self {
+    pub fn new(x: i32, y: i32) -> Self {
         Position { x, y }
     }
 }
