@@ -134,7 +134,7 @@ impl Grid {
                 let neighbour = self.nodes.get(&pos).expect("invalid position");
                 let temp_g_cost = current_node.borrow().g_cost + 10;
                 if temp_g_cost > neighbour.borrow().g_cost {
-                    continue; // this way a worse path
+                    continue; // this way would have been a worse path
                 }
                 let g_cost = temp_g_cost;
                 let h_cost = position::euclid_distance(&current_pos, &pos);
