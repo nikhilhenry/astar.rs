@@ -1,5 +1,6 @@
 use eframe::egui::{Context, Sense};
 use eframe::{egui, Frame};
+use path_finding::frame_history::FrameHistory;
 use path_finding::node::{Node, NodeType};
 use path_finding::Grid;
 
@@ -41,6 +42,7 @@ struct MyApp {
     rounding: egui::Rounding,
     grid: Grid,
     cursor_type: CursorType,
+    frame_history: FrameHistory,
 }
 
 impl MyApp {
@@ -53,12 +55,15 @@ impl MyApp {
             rounding: egui::Rounding::default(),
             grid,
             cursor_type: CursorType::Start,
+            frame_history: FrameHistory::default(),
         }
     }
 }
 
 impl eframe::App for MyApp {
-    fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+    fn update(&mut self, ctx: &Context, frame: &mut Frame) {
+        self.frame_history
+            .on_new_frame(ctx.input(|i| i.time), frame.info().cpu_usage);
         egui::SidePanel::right("my_left_panel").show(ctx, |ui| {
             ui.with_layout(
                 egui::Layout::top_down_justified(egui::Align::Center),
@@ -77,11 +82,12 @@ impl eframe::App for MyApp {
                             ui.selectable_value(&mut self.cursor_type, CursorType::Goal, "Goal");
                         });
                     ui.end_row();
+                    ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
                     ui.add_enabled_ui(self.grid.is_ready(), |ui| {
                         if ui.button("Find Path").clicked() {
                             self.grid.solve();
                         }
-                    })
+                    });
                 },
             )
         });

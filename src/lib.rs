@@ -1,3 +1,4 @@
+pub mod frame_history;
 pub mod node;
 mod position;
 #[cfg(test)]
