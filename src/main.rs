@@ -36,6 +36,8 @@ impl NodeColor for Node {
     }
 }
 
+const WIDGET_SPACING: f32 = 10.0;
+
 struct MyApp {
     height: usize,
     width: usize,
@@ -44,6 +46,8 @@ struct MyApp {
     grid: Grid,
     cursor_type: CursorType,
     frame_history: FrameHistory,
+    new_height: usize,
+    new_width: usize,
 }
 
 impl MyApp {
@@ -57,6 +61,8 @@ impl MyApp {
             grid,
             cursor_type: CursorType::Start,
             frame_history: FrameHistory::default(),
+            new_height: height,
+            new_width: width,
         }
     }
 }
@@ -70,7 +76,7 @@ impl eframe::App for MyApp {
                 egui::Layout::top_down_justified(egui::Align::Center),
                 |ui| {
                     ui.label("Settings");
-                    ui.end_row();
+                    ui.add_space(WIDGET_SPACING);
                     egui::ComboBox::from_label("Select Node Type")
                         .selected_text(format!("{:?}", self.cursor_type))
                         .show_ui(ui, |ui| {
@@ -82,8 +88,27 @@ impl eframe::App for MyApp {
                             );
                             ui.selectable_value(&mut self.cursor_type, CursorType::Goal, "Goal");
                         });
-                    ui.end_row();
+                    ui.add_space(WIDGET_SPACING);
+                    ui.group(|ui| {
+                        ui.add(
+                            egui::Slider::new(&mut self.new_height, 2..=50)
+                                .text("Grid height")
+                                .integer(),
+                        );
+                        ui.add(
+                            egui::Slider::new(&mut self.new_width, 2..=50)
+                                .text("Grid width")
+                                .integer(),
+                        );
+                        if ui.button("Rebuild Grid").clicked() {
+                            self.height = self.new_height;
+                            self.width = self.new_width;
+                            self.grid = Grid::new(self.new_height, self.new_width);
+                        }
+                    });
+                    ui.add_space(WIDGET_SPACING);
                     ui.checkbox(&mut self.grid.allow_diagonal, "Move Diagonally");
+                    ui.add_space(WIDGET_SPACING);
                     ui.add_enabled_ui(self.grid.is_ready(), |ui| {
                         if ui.button("Find Path").clicked() {
                             self.grid.solve();
