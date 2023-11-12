@@ -3,8 +3,10 @@ mod position;
 
 use crate::node::Node;
 use crate::position::Position;
-use std::collections::HashMap;
+use std::cell::{Ref, RefCell};
 use std::collections::{BinaryHeap, HashMap};
+use std::ops::Deref;
+
 pub struct Grid {
     height: usize,
     width: usize,

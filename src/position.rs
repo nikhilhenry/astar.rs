@@ -1,14 +1,14 @@
 use std::cmp::Ordering;
 use std::ops::Add;
 
-#[derive(Hash, Debug)]
+#[derive(Hash, Debug, Clone)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
 }
 
 impl Position {
-    pub fn new(x: i32, y: i32) -> Self {
+    pub const fn new(x: i32, y: i32) -> Self {
         Position { x, y }
     }
 }
