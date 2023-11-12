@@ -101,6 +101,17 @@ impl Grid {
         Some(pos) == self.start
     }
 
+    fn trace_path(&self, position: Position) {
+        let node = self.nodes.get(&position).unwrap();
+        let parent = node.borrow().parent.clone();
+        node.borrow_mut().node_type = NodeType::Obstacle;
+
+        if let Some(pos) = parent {
+            println!("parent at {:?}", pos);
+            self.trace_path(pos)
+        }
+    }
+
     pub fn solve(&mut self) {
         let mut iters = 0;
         let start_pos = self.start.clone();
@@ -115,18 +126,28 @@ impl Grid {
         let goal = (self.height as i32 * goal_pos.y + goal_pos.x) as usize;
 
         let mut open_set = BinaryHeap::new();
-        let mut start_node = Node::default();
-        start_node.h_cost = 0;
-        start_node.g_cost = 0;
-        start_node.f_cost = 0;
+        let mut start_node = self
+            .nodes
+            .get(&start_pos)
+            .expect("must be valid start position");
+        start_node.borrow_mut().h_cost = 0;
+        start_node.borrow_mut().g_cost = 0;
+        start_node.borrow_mut().f_cost = 0;
 
-        start_node.index = self.get_index_from_pos(&start_pos);
-        start_node.node_type = NodeType::Traversed;
-        open_set.push(Rc::new(RefCell::new(start_node)));
+        // start_node.node_type = NodeType::Traversed;
+        open_set.push(start_node.clone());
 
         while let Some(current_node) = open_set.pop() {
+            iters += 1;
             if current_node.borrow().index == goal {
                 println!("solution found in {iters}");
+                self.trace_path(
+                    current_node
+                        .borrow()
+                        .parent
+                        .clone()
+                        .expect("need to have a parent"),
+                );
                 break;
             }
             let current_pos = self.get_pos_from_index(current_node.borrow().index);
@@ -139,13 +160,15 @@ impl Grid {
                 let g_cost = temp_g_cost;
                 let h_cost = position::euclid_distance(&current_pos, &pos);
                 let f_cost = g_cost + h_cost;
-                neighbour.borrow_mut().node_type = NodeType::Traversed;
                 neighbour.borrow_mut().g_cost = g_cost;
                 neighbour.borrow_mut().h_cost = h_cost;
                 neighbour.borrow_mut().f_cost = f_cost;
                 neighbour.borrow_mut().parent = Some(current_pos.clone());
+                if neighbour.borrow().node_type == NodeType::Traversed {
+                    continue;
+                }
+                neighbour.borrow_mut().node_type = NodeType::Traversed;
                 open_set.push(neighbour.clone());
-                iters += 1;
             }
         }
     }

@@ -1,6 +1,7 @@
 use crate::position::Position;
 use std::cmp::Ordering;
 
+#[derive(PartialEq)]
 pub enum NodeType {
     Obstacle,
     Traversable,
