@@ -109,7 +109,7 @@ impl Grid {
     fn trace_path(&self, position: Position) {
         let node = self.nodes.get(&position).unwrap();
         let parent = node.borrow().parent.clone();
-        node.borrow_mut().node_type = NodeType::Obstacle;
+        node.borrow_mut().node_type = NodeType::Path;
 
         if let Some(pos) = parent {
             self.trace_path(pos)

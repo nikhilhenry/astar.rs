@@ -6,6 +6,7 @@ pub enum NodeType {
     Obstacle,
     Traversable,
     Traversed,
+    Path,
 }
 
 pub struct Node {

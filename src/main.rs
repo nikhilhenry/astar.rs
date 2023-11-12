@@ -30,7 +30,8 @@ impl NodeColor for Node {
         match self.node_type {
             NodeType::Obstacle => egui::Color32::LIGHT_RED,
             NodeType::Traversable => egui::Color32::TRANSPARENT,
-            NodeType::Traversed => egui::Color32::DARK_GRAY,
+            NodeType::Traversed => egui::Color32::LIGHT_GRAY,
+            NodeType::Path => egui::Color32::GRAY,
         }
     }
 }
