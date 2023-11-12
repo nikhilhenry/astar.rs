@@ -191,7 +191,7 @@ impl Grid {
                     continue; // this way would have been a worse path
                 }
                 let g_cost = temp_g_cost;
-                let h_cost = position::euclid_distance(&current_pos, &pos);
+                let h_cost = position::euclid_distance(&current_pos, &goal_pos);
                 let f_cost = g_cost + h_cost;
                 neighbour.borrow_mut().g_cost = g_cost;
                 neighbour.borrow_mut().h_cost = h_cost;
