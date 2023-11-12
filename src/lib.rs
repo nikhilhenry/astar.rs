@@ -126,10 +126,10 @@ impl Grid {
             panic!("no goal position")
         };
 
-        let goal = (self.height as i32 * goal_pos.y + goal_pos.x) as usize;
+        let goal = self.get_index_from_pos(&goal_pos);
 
         let mut open_set = BinaryHeap::new();
-        let mut start_node = self
+        let start_node = self
             .nodes
             .get(&start_pos)
             .expect("must be valid start position");

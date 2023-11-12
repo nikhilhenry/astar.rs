@@ -1,4 +1,4 @@
-use eframe::egui::{Color32, Context, Sense};
+use eframe::egui::{Context, Sense};
 use eframe::{egui, Frame};
 use path_finding::node::{Node, NodeType};
 use path_finding::Grid;
@@ -25,7 +25,7 @@ trait NodeColor {
 }
 
 impl NodeColor for Node {
-    fn get_color(&self) -> Color32 {
+    fn get_color(&self) -> egui::Color32 {
         match self.node_type {
             NodeType::Obstacle => egui::Color32::LIGHT_RED,
             NodeType::Traversable => egui::Color32::TRANSPARENT,
