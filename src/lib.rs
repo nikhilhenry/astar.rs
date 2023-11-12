@@ -1,16 +1,14 @@
 pub mod node;
 mod position;
 
-use crate::node::Node;
+use crate::node::{Node, NodeType};
 use crate::position::Position;
 use std::cell::{Ref, RefCell};
 use std::collections::{BinaryHeap, HashMap};
-use std::ops::Deref;
-
 pub struct Grid {
     height: usize,
     width: usize,
-    nodes: HashMap<Position, Node>,
+    nodes: HashMap<Position, RefCell<Node>>,
     goal: Option<Position>,
     start: Option<Position>,
 }
@@ -42,10 +40,12 @@ impl Grid {
         }
     }
 
-    pub fn get_node_at(&self, x: usize, y: usize) -> &Node {
+    pub fn get_node_at(&self, x: usize, y: usize) -> Ref<Node> {
         let pos = Position::new(x as i32, y as i32);
-        let node = self.nodes.get(&pos);
-        node.expect(&*format!("{:?} is invalid", pos))
+        self.nodes
+            .get(&pos)
+            .expect(&*format!("{:?} is invalid", pos))
+            .borrow()
     }
 
     fn is_valid_pos(&self, pos: &Position) -> bool {
@@ -62,7 +62,9 @@ impl Grid {
 
     pub fn set_obstacle(&mut self, x: usize, y: usize) {
         let pos = Position::new(x as i32, y as i32);
-        self.nodes.entry(pos).and_modify(|node| node.set_obstacle());
+        self.nodes
+            .entry(pos)
+            .and_modify(|node| node.borrow_mut().set_obstacle());
     }
 
     pub fn set_start(&mut self, x: usize, y: usize) {
