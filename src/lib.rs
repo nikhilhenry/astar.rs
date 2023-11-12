@@ -7,7 +7,6 @@ use crate::node::{Node, NodeType};
 use crate::position::Position;
 use std::cell::{Ref, RefCell};
 use std::collections::{BinaryHeap, HashMap};
-use std::ops::Deref;
 use std::rc::Rc;
 
 pub struct Grid {
@@ -103,6 +102,7 @@ impl Grid {
     }
 
     pub fn solve(&mut self) {
+        let mut iters = 0;
         let start_pos = self.start.clone();
         let Some(start_pos) = start_pos else {
             panic!("no start position");
@@ -126,7 +126,7 @@ impl Grid {
 
         while let Some(current_node) = open_set.pop() {
             if current_node.borrow().index == goal {
-                todo!("Found solution -> Now Trace path!");
+                println!("solution found in {iters}");
                 break;
             }
             let current_pos = self.get_pos_from_index(current_node.borrow().index);
@@ -145,6 +145,7 @@ impl Grid {
                 neighbour.borrow_mut().f_cost = f_cost;
                 neighbour.borrow_mut().parent = Some(current_pos.clone());
                 open_set.push(neighbour.clone());
+                iters += 1;
             }
         }
     }
