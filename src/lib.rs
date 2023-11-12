@@ -4,6 +4,7 @@ mod position;
 use crate::node::Node;
 use crate::position::Position;
 use std::collections::HashMap;
+use std::collections::{BinaryHeap, HashMap};
 pub struct Grid {
     height: usize,
     width: usize,
@@ -11,6 +12,13 @@ pub struct Grid {
     goal: Option<Position>,
     start: Option<Position>,
 }
+
+const OFFSETS: [Position; 4] = [
+    Position::new(1, 0),
+    Position::new(-1, 0),
+    Position::new(0, 1),
+    Position::new(0, -1),
+];
 
 impl Grid {
     pub fn new(height: usize, width: usize) -> Self {
@@ -38,8 +46,16 @@ impl Grid {
         node.expect(&*format!("{:?} is invalid", pos))
     }
 
-    pub fn is_valid_pos(&self, pos: &Position) -> bool {
+    fn is_valid_pos(&self, pos: &Position) -> bool {
         pos.x >= 0 && pos.x < self.width as i32 && pos.y >= 0 && pos.y < self.height as i32
+    }
+
+    fn get_neighbours(&self, me: &Position) -> Vec<Position> {
+        OFFSETS
+            .iter()
+            .map(|offset| me + offset)
+            .filter(|pos| self.is_valid_pos(&pos))
+            .collect()
     }
 
     pub fn set_obstacle(&mut self, x: usize, y: usize) {
