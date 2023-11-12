@@ -83,12 +83,14 @@ impl eframe::App for MyApp {
                             ui.selectable_value(&mut self.cursor_type, CursorType::Goal, "Goal");
                         });
                     ui.end_row();
-                    ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
+                    ui.checkbox(&mut self.grid.allow_diagonal, "Move Diagonally");
                     ui.add_enabled_ui(self.grid.is_ready(), |ui| {
                         if ui.button("Find Path").clicked() {
                             self.grid.solve();
                         }
                     });
+                    ui.separator();
+                    ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
                 },
             )
         });

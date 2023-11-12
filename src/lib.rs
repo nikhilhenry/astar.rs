@@ -16,6 +16,7 @@ pub struct Grid {
     nodes: HashMap<Position, Rc<RefCell<Node>>>,
     goal: Option<Position>,
     start: Option<Position>,
+    pub allow_diagonal: bool,
 }
 
 const OFFSETS: [Position; 4] = [
@@ -49,6 +50,7 @@ impl Grid {
             nodes,
             goal: None,
             start: None,
+            allow_diagonal: true,
         }
     }
 
@@ -174,7 +176,12 @@ impl Grid {
                 break;
             }
             let current_pos = self.get_pos_from_index(current_node.borrow().index);
-            for (pos, cost) in self.get_neighbours_diag(&current_pos) {
+            let neighbours = if self.allow_diagonal {
+                self.get_neighbours_diag(&current_pos)
+            } else {
+                self.get_neighbours(&current_pos)
+            };
+            for (pos, cost) in neighbours {
                 let neighbour = self.nodes.get(&pos).expect("invalid position");
                 if neighbour.borrow().node_type == NodeType::Obstacle {
                     continue;
