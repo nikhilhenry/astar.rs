@@ -9,7 +9,6 @@ use crate::position::Position;
 use std::cell::{Ref, RefCell};
 use std::collections::{BinaryHeap, HashMap};
 use std::rc::Rc;
-use std::time::{Duration, Instant};
 
 pub struct Grid {
     height: usize,
@@ -19,7 +18,6 @@ pub struct Grid {
     start: Option<Position>,
     pub allow_diagonal: bool,
     path: Option<Vec<Position>>,
-    pub duration: Option<Duration>,
 }
 
 const OFFSETS: [Position; 4] = [
@@ -55,7 +53,6 @@ impl Grid {
             start: None,
             allow_diagonal: true,
             path: None,
-            duration: None,
         }
     }
 
@@ -186,12 +183,9 @@ impl Grid {
         // start_node.node_type = NodeType::Traversed;
         open_set.push(start_node.clone());
 
-        let now = Instant::now();
-
         while let Some(current_node) = open_set.pop() {
             iters += 1;
             if current_node.borrow().index == goal {
-                self.duration = Some(now.elapsed());
                 self.trace_path(
                     current_node
                         .borrow()

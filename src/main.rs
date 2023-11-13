@@ -4,6 +4,26 @@ use path_finding::frame_history::FrameHistory;
 use path_finding::node::{Node, NodeType};
 use path_finding::Grid;
 
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    // Redirect `log` message to `console.log` and friends:
+    eframe::WebLogger::init(log::LevelFilter::Debug).ok();
+
+    let web_options = eframe::WebOptions::default();
+
+    wasm_bindgen_futures::spawn_local(async {
+        eframe::WebRunner::new()
+            .start(
+                "the_canvas_id", // hardcode it
+                web_options,
+                Box::new(|cc| Box::new(MyApp::build(10, 10))),
+            )
+            .await
+            .expect("failed to start eframe");
+    });
+}
+
+#[cfg(not(target_arch = "wasm32"))]
 fn main() {
     let options = eframe::NativeOptions::default();
     eframe::run_native(
@@ -120,9 +140,6 @@ impl eframe::App for MyApp {
                     });
                     ui.separator();
                     ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
-                    if let Some(duration) = self.grid.duration {
-                        ui.label(format!("Completed in: {:.1} μs", duration.as_micros()));
-                    }
                 },
             )
         });
