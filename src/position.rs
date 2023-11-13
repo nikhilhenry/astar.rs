@@ -1,12 +1,11 @@
-use std::cmp::Ordering;
+use std::hash::Hash;
 use std::ops::Add;
 
-#[derive(Hash, Debug, Clone)]
+#[derive(Hash, Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
 }
-
 pub fn euclid_distance(from: &Position, to: &Position) -> usize {
     let x_dist = (from.x - to.x).abs();
     let y_dist = (from.y - to.y).abs();
@@ -38,25 +37,5 @@ impl Add<&Position> for Position {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
         }
-    }
-}
-
-impl Eq for Position {}
-
-impl PartialEq<Self> for Position {
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
-    }
-}
-
-impl PartialOrd<Self> for Position {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for Position {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.x.cmp(&other.y).then_with(|| self.y.cmp(&other.y))
     }
 }

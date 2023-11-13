@@ -18,12 +18,12 @@ fn correct_index_rectangle() {
 #[test]
 fn valid_positions() {
     let grid = Grid::new(5, 5);
-    assert_eq!(true, grid.is_valid_pos(&Position::new(1, 0)));
-    assert_eq!(true, grid.is_valid_pos(&Position::new(4, 4)));
-    assert_eq!(false, grid.is_valid_pos(&Position::new(-1, 0)));
-    assert_eq!(false, grid.is_valid_pos(&Position::new(5, 4)));
-    assert_eq!(false, grid.is_valid_pos(&Position::new(4, 5)));
-    assert_eq!(false, grid.is_valid_pos(&Position::new(5, 5)));
+    assert!(grid.is_valid_pos(&Position::new(1, 0)));
+    assert!(grid.is_valid_pos(&Position::new(4, 4)));
+    assert!(!grid.is_valid_pos(&Position::new(-1, 0)));
+    assert!(!grid.is_valid_pos(&Position::new(5, 4)));
+    assert!(!grid.is_valid_pos(&Position::new(4, 5)));
+    assert!(!grid.is_valid_pos(&Position::new(5, 5)));
 }
 
 #[test]
