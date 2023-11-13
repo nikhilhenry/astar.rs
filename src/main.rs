@@ -21,6 +21,7 @@ fn main() {
             .await
             .expect("failed to start eframe");
     });
+    //     pls deploy to github
 }
 
 #[cfg(not(target_arch = "wasm32"))]
