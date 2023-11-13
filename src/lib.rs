@@ -178,9 +178,10 @@ impl Grid {
             .nodes
             .get(&start_pos)
             .expect("must be valid start position");
-        start_node.borrow_mut().h_cost = 0;
+        let start_h_cost = position::euclid_distance(&start_pos, &goal_pos);
+        start_node.borrow_mut().h_cost = start_h_cost;
         start_node.borrow_mut().g_cost = 0;
-        start_node.borrow_mut().f_cost = 0;
+        start_node.borrow_mut().f_cost = start_h_cost;
 
         // start_node.node_type = NodeType::Traversed;
         open_set.push(start_node.clone());
