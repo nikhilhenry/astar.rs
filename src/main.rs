@@ -25,7 +25,11 @@ fn main() {
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() {
-    let options = eframe::NativeOptions::default();
+    let icon_data = eframe::IconData::try_from_png_bytes(include_bytes!("assets/icon.png")).ok();
+    let options = eframe::NativeOptions {
+        icon_data,
+        ..Default::default()
+    };
     eframe::run_native(
         "astar.rs",
         options,
