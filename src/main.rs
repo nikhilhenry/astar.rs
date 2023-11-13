@@ -120,6 +120,9 @@ impl eframe::App for MyApp {
                     });
                     ui.separator();
                     ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
+                    if let Some(duration) = self.grid.duration {
+                        ui.label(format!("Completed in: {:.1} μs", duration.as_micros()));
+                    }
                 },
             )
         });
