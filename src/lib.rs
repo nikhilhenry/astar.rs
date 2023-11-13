@@ -194,7 +194,8 @@ impl Grid {
         while let Some(current_node) = open_set.pop() {
             #[cfg(not(target_arch = "wasm32"))]
             let duration = Some(now.elapsed());
-            #[cfg(not(target_arch = "wasm32"))]
+            #[cfg(target_arch = "wasm32")]
+            let duration = None;
             self.duration = duration;
 
             if current_node.borrow().index == goal {
