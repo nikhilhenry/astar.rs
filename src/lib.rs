@@ -78,14 +78,11 @@ impl Grid {
             .collect()
     }
     fn get_neighbours_diag(&self, me: &Position) -> Vec<Position> {
-        let mut adjacent_neighbours = self.get_neighbours(me);
-        let mut diag_neighbours: Vec<_> = DIAG_OFFSETS
+        DIAG_OFFSETS
             .iter()
             .map(|offset| *&me + offset)
             .filter(|pos| self.is_valid_pos(&pos))
-            .collect();
-        adjacent_neighbours.append(&mut diag_neighbours);
-        adjacent_neighbours
+            .collect()
     }
     // returns the adjacent neighbours with cost(10)
     fn get_neighbours_cost(&self, me: &Position) -> Vec<(Position, usize)> {
@@ -96,10 +93,14 @@ impl Grid {
     }
     // returns the adjacent and diagonal neighbours with cost (14)
     fn get_neighbours_diag_cost(&self, me: &Position) -> Vec<(Position, usize)> {
-        self.get_neighbours_diag(me)
+        let mut diag_cost: Vec<(Position, usize)> = self
+            .get_neighbours_diag(me)
             .iter()
             .map(|pos| (pos.clone(), 14))
-            .collect()
+            .collect();
+        let mut adjacent_cost = self.get_neighbours_cost(me);
+        adjacent_cost.append(&mut diag_cost);
+        adjacent_cost
     }
 
     fn get_index_from_pos(&self, pos: &Position) -> usize {
