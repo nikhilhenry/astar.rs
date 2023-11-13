@@ -17,6 +17,7 @@ pub struct Grid {
     goal: Option<Position>,
     start: Option<Position>,
     pub allow_diagonal: bool,
+    path: Option<Vec<Position>>,
 }
 
 const OFFSETS: [Position; 4] = [
@@ -40,7 +41,7 @@ impl Grid {
             for x in 0..width {
                 let pos = Position::new(x as i32, y as i32);
                 let mut node = Node::default();
-                node.index = height * y + x;
+                node.index = width * y + x;
                 nodes.insert(pos, Rc::new(RefCell::new(node)));
             }
         }
@@ -51,6 +52,7 @@ impl Grid {
             goal: None,
             start: None,
             allow_diagonal: true,
+            path: None,
         }
     }
 
@@ -140,14 +142,19 @@ impl Grid {
         Some(pos) == self.start
     }
 
-    fn trace_path(&self, position: Position) {
-        let node = self.nodes.get(&position).unwrap();
-        let parent = node.borrow().parent.clone();
-        node.borrow_mut().node_type = NodeType::Path;
-
-        if let Some(pos) = parent {
-            self.trace_path(pos)
+    fn trace_path(&mut self, position: Position) {
+        let mut path_pos: Vec<Position> = Vec::new();
+        path_pos.push(position.clone());
+        let mut current_pos = position;
+        while let Some(parent_node) = self.nodes.get(&current_pos) {
+            if let Some(parent_pos) = parent_node.borrow().parent.clone() {
+                current_pos = parent_pos;
+                path_pos.push(current_pos.clone());
+            } else {
+                break;
+            }
         }
+        self.path = Some(path_pos);
     }
 
     pub fn solve(&mut self) {
@@ -216,6 +223,18 @@ impl Grid {
                 neighbour.borrow_mut().node_type = NodeType::Traversed;
                 open_set.push(neighbour.clone());
             }
+        }
+        if let Some(path) = &self.path {
+            // set all the nodes to path
+            path.iter().for_each(|pos| {
+                self.nodes
+                    .get(pos)
+                    .expect("node should exist")
+                    .borrow_mut()
+                    .node_type = NodeType::Path;
+            })
+        } else {
+            println!("no solution found");
         }
     }
 }
