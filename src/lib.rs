@@ -70,28 +70,40 @@ impl Grid {
         pos.x >= 0 && pos.x < self.width as i32 && pos.y >= 0 && pos.y < self.height as i32
     }
 
-    fn get_neighbours(&self, me: &Position) -> Vec<(Position, usize)> {
+    fn get_neighbours(&self, me: &Position) -> Vec<Position> {
         OFFSETS
             .iter()
             .map(|offset| *&me + offset)
             .filter(|pos| self.is_valid_pos(&pos))
-            .map(|pos| (pos, 10))
             .collect()
     }
-    fn get_neighbours_diag(&self, me: &Position) -> Vec<(Position, usize)> {
+    fn get_neighbours_diag(&self, me: &Position) -> Vec<Position> {
         let mut adjacent_neighbours = self.get_neighbours(me);
         let mut diag_neighbours: Vec<_> = DIAG_OFFSETS
             .iter()
             .map(|offset| *&me + offset)
             .filter(|pos| self.is_valid_pos(&pos))
-            .map(|pos| (pos, 14))
             .collect();
         adjacent_neighbours.append(&mut diag_neighbours);
         adjacent_neighbours
     }
+    // returns the adjacent neighbours with cost(10)
+    fn get_neighbours_cost(&self, me: &Position) -> Vec<(Position, usize)> {
+        self.get_neighbours(me)
+            .iter()
+            .map(|pos| (pos.clone(), 10))
+            .collect()
+    }
+    // returns the adjacent and diagonal neighbours with cost (14)
+    fn get_neighbours_diag_cost(&self, me: &Position) -> Vec<(Position, usize)> {
+        self.get_neighbours_diag(me)
+            .iter()
+            .map(|pos| (pos.clone(), 14))
+            .collect()
+    }
 
     fn get_index_from_pos(&self, pos: &Position) -> usize {
-        self.height * (pos.y as usize) + (pos.x as usize)
+        self.width * (pos.y as usize) + (pos.x as usize)
     }
 
     fn get_pos_from_index(&self, idx: usize) -> Position {

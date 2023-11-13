@@ -1,11 +1,18 @@
 use super::*;
 
 #[test]
-fn correct_index() {
+fn correct_index_square() {
     let grid = Grid::new(5, 5);
     assert_eq!(1, grid.get_index_from_pos(&Position::new(1, 0)));
     assert_eq!(5, grid.get_index_from_pos(&Position::new(0, 1)));
     assert_eq!(24, grid.get_index_from_pos(&Position::new(4, 4)));
+}
+#[test]
+fn correct_index_rectangle() {
+    let grid = Grid::new(3, 4);
+    assert_eq!(1, grid.get_index_from_pos(&Position::new(1, 0)));
+    assert_eq!(5, grid.get_index_from_pos(&Position::new(1, 1)));
+    assert_eq!(9, grid.get_index_from_pos(&Position::new(1, 2)));
 }
 
 #[test]
