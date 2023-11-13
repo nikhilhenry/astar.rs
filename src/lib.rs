@@ -1,3 +1,4 @@
+#![feature(stmt_expr_attributes)]
 pub mod frame_history;
 pub mod node;
 mod position;
@@ -9,6 +10,7 @@ use crate::position::Position;
 use std::cell::{Ref, RefCell};
 use std::collections::{BinaryHeap, HashMap};
 use std::rc::Rc;
+use std::time::{Duration, Instant};
 
 pub struct Grid {
     height: usize,
@@ -18,6 +20,7 @@ pub struct Grid {
     start: Option<Position>,
     pub allow_diagonal: bool,
     path: Option<Vec<Position>>,
+    pub duration: Option<Duration>,
 }
 
 const OFFSETS: [Position; 4] = [
@@ -40,8 +43,10 @@ impl Grid {
         for y in 0..height {
             for x in 0..width {
                 let pos = Position::new(x as i32, y as i32);
-                let mut node = Node::default();
-                node.index = width * y + x;
+                let node = Node {
+                    index: width * y + x,
+                    ..Default::default()
+                };
                 nodes.insert(pos, Rc::new(RefCell::new(node)));
             }
         }
@@ -53,6 +58,7 @@ impl Grid {
             start: None,
             allow_diagonal: true,
             path: None,
+            duration: None,
         }
     }
 
@@ -64,7 +70,7 @@ impl Grid {
         let pos = Position::new(x as i32, y as i32);
         self.nodes
             .get(&pos)
-            .expect(&*format!("{:?} is invalid", pos))
+            .unwrap_or_else(|| panic!("{:?} is invalid", pos))
             .borrow()
     }
 
@@ -75,15 +81,15 @@ impl Grid {
     fn get_neighbours(&self, me: &Position) -> Vec<Position> {
         OFFSETS
             .iter()
-            .map(|offset| *&me + offset)
-            .filter(|pos| self.is_valid_pos(&pos))
+            .map(|offset| me + offset)
+            .filter(|pos| self.is_valid_pos(pos))
             .collect()
     }
     fn get_neighbours_diag(&self, me: &Position) -> Vec<Position> {
         DIAG_OFFSETS
             .iter()
-            .map(|offset| *&me + offset)
-            .filter(|pos| self.is_valid_pos(&pos))
+            .map(|offset| me + offset)
+            .filter(|pos| self.is_valid_pos(pos))
             .collect()
     }
     // returns the adjacent neighbours with cost(10)
@@ -158,7 +164,6 @@ impl Grid {
     }
 
     pub fn solve(&mut self) {
-        let mut iters = 0;
         let start_pos = self.start.clone();
         let Some(start_pos) = start_pos else {
             panic!("no start position");
@@ -183,8 +188,15 @@ impl Grid {
         // start_node.node_type = NodeType::Traversed;
         open_set.push(start_node.clone());
 
+        #[cfg(not(target_arch = "wasm32"))]
+        let now = Instant::now();
+
         while let Some(current_node) = open_set.pop() {
-            iters += 1;
+            #[cfg(not(target_arch = "wasm32"))]
+            let duration = Some(now.elapsed());
+            #[cfg(not(target_arch = "wasm32"))]
+            self.duration = duration;
+
             if current_node.borrow().index == goal {
                 self.trace_path(
                     current_node

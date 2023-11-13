@@ -19,16 +19,15 @@ fn main() {
                 Box::new(|cc| Box::new(MyApp::build(10, 10))),
             )
             .await
-            .expect("failed to start eframe");
+            .expect("failed to start app");
     });
-    //     pls deploy to github
 }
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() {
     let options = eframe::NativeOptions::default();
     eframe::run_native(
-        "Path Finding",
+        "astar.rs",
         options,
         Box::new(|_cc| Box::new(MyApp::build(10, 10))),
     )
@@ -141,6 +140,9 @@ impl eframe::App for MyApp {
                     });
                     ui.separator();
                     ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
+                    if let Some(duration) = self.grid.duration {
+                        ui.label(format!("Completed in: {:.1} μs", duration.as_micros()));
+                    }
                 },
             )
         });
