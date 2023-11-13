@@ -27,11 +27,19 @@ fn valid_positions() {
 }
 
 #[test]
-fn correct_pos_from_index() {
+fn correct_pos_from_index_square() {
     let grid = Grid::new(5, 5);
     assert_eq!(Position::new(1, 0), grid.get_pos_from_index(1));
     assert_eq!(Position::new(0, 1), grid.get_pos_from_index(5));
     assert_eq!(Position::new(4, 4), grid.get_pos_from_index(24));
+}
+
+#[test]
+fn correct_pos_from_index_rectangle() {
+    let grid = Grid::new(3, 4);
+    assert_eq!(Position::new(1, 0), grid.get_pos_from_index(1));
+    assert_eq!(Position::new(1, 1), grid.get_pos_from_index(5));
+    assert_eq!(Position::new(1, 2), grid.get_pos_from_index(9));
 }
 
 #[test]

@@ -108,7 +108,7 @@ impl Grid {
 
     fn get_pos_from_index(&self, idx: usize) -> Position {
         let row = idx / self.width;
-        let col = idx - self.height * row;
+        let col = idx % self.width;
         Position::new(col as i32, row as i32)
     }
 
@@ -189,9 +189,9 @@ impl Grid {
             }
             let current_pos = self.get_pos_from_index(current_node.borrow().index);
             let neighbours = if self.allow_diagonal {
-                self.get_neighbours_diag(&current_pos)
+                self.get_neighbours_diag_cost(&current_pos)
             } else {
-                self.get_neighbours(&current_pos)
+                self.get_neighbours_cost(&current_pos)
             };
             for (pos, cost) in neighbours {
                 let neighbour = self.nodes.get(&pos).expect("invalid position");
