@@ -40,11 +40,34 @@ fn correct_pos_from_index_rectangle() {
     assert_eq!(Position::new(1, 0), grid.get_pos_from_index(1));
     assert_eq!(Position::new(1, 1), grid.get_pos_from_index(5));
     assert_eq!(Position::new(1, 2), grid.get_pos_from_index(9));
+
+    let grid = Grid::new(5, 10);
+    assert_eq!(Position::new(2, 2), grid.get_pos_from_index(22));
+    assert_eq!(Position::new(5, 3), grid.get_pos_from_index(35));
+    assert_eq!(Position::new(6, 4), grid.get_pos_from_index(46));
 }
 
 #[test]
 fn correct_neighbours() {
     let grid = Grid::new(5, 5);
+    assert_eq!(
+        vec![Position::new(1, 0), Position::new(0, 1)],
+        grid.get_neighbours(&Position::new(0, 0))
+    );
+    assert_eq!(
+        vec![
+            Position::new(2, 1),
+            Position::new(0, 1),
+            Position::new(1, 0),
+            Position::new(1, 2),
+        ],
+        grid.get_neighbours(&Position::new(1, 1))
+    );
+}
+
+#[test]
+fn correct_neighbours_rect() {
+    let grid = Grid::new(5, 10);
     assert_eq!(
         vec![Position::new(1, 0), Position::new(0, 1)],
         grid.get_neighbours(&Position::new(0, 0))
