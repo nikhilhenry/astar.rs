@@ -97,7 +97,8 @@ impl eframe::App for MyApp {
             ui.with_layout(
                 egui::Layout::top_down_justified(egui::Align::Center),
                 |ui| {
-                    ui.label("Settings");
+                    ui.add_space(WIDGET_SPACING);
+                    ui.label("SETTINGS");
                     ui.add_space(WIDGET_SPACING);
                     egui::ComboBox::from_label("Select Node Type")
                         .selected_text(format!("{:?}", self.cursor_type))
