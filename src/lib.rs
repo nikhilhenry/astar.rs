@@ -192,7 +192,6 @@ impl Grid {
             iters += 1;
             if current_node.borrow().index == goal {
                 self.duration = Some(now.elapsed());
-                println!("solution found in {iters}");
                 self.trace_path(
                     current_node
                         .borrow()
@@ -240,8 +239,6 @@ impl Grid {
                     .borrow_mut()
                     .node_type = NodeType::Path;
             })
-        } else {
-            println!("no solution found");
         }
     }
 }
