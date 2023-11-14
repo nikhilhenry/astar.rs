@@ -1,23 +1,29 @@
-# Astar.rs
+# astar.rs
 
-A rust powered A* pathfinding GUI application for MacOS. A wasm-based web version is also available.
+A blazingly-fast [A-Star](https://en.wikipedia.org/wiki/A*_search_algorithm) search algorithm and visualisation written in Rust. GUI powered by [egui](https://www.egui.rs/). 
 
-Allows for efficient and fast pathfinding simulations. It will also allow you to choose between multiple heuristics in the future.
+Allows for dynamic grid sizes and user-chosen heuristics. Runs natively on MacOS, Linux and the web using WASM!
+
+## Demo
+The WASM-based demo of the app is hosted [here](https:/nikhilhenry.github.io/astar.rs).
 
 ## Installation
 
-The binary can be installed from the releases page. To find out more about changes across the releases, check out the changelog below.
+Prebuilt binaries for MacOS can be found on the releases page. 
+
+For other platforms, clone the repo and run:
+
+```bash
+cargo run --release
+```
+...with Rust installed ofc ;)
 
 ## Changelog
 
-### Roadmap
-
-- Choose between 3 heurisitcs
-- Export and Import graphs in a text format
-- Benchmark creation utility
-
 ### Version v0.0.1 [14-11-2023]
-
 - Initial release
-- Supports an in-built heuristicthat is not disclosed
-- Support for 50x50 grids
+- Support for up to 50x50 grids
+- Supports up to 3 heuristics
+- Builds for both WASM and x86_64
+
+Icon credits - [Václav Vančura](https://www.figma.com/community/file/857303226040719059)
