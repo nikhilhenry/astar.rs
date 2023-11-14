@@ -106,6 +106,7 @@ impl eframe::App for MyApp {
                 egui::Layout::top_down_justified(egui::Align::Center),
                 |ui| {
                     ui.add_space(WIDGET_SPACING);
+                    ui.add_space(0.0);
                     ui.label("SETTINGS");
                     ui.add_space(WIDGET_SPACING);
                     egui::ComboBox::from_label("Select Node Type")
