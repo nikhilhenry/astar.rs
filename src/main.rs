@@ -45,6 +45,13 @@ enum CursorType {
     Start,
 }
 
+#[derive(Debug, PartialEq)]
+enum Heuristic {
+    Manhattan,
+    Diagonal,
+    Euclidean,
+}
+
 trait NodeColor {
     fn get_color(&self) -> egui::Color32;
 }
@@ -73,6 +80,7 @@ struct MyApp {
     new_height: usize,
     new_width: usize,
     show_cost: bool,
+    heuristic: Heuristic,
 }
 
 impl MyApp {
@@ -89,6 +97,7 @@ impl MyApp {
             new_height: height,
             new_width: width,
             show_cost: true,
+            heuristic: Heuristic::Manhattan,
         }
     }
 }
@@ -133,6 +142,28 @@ impl eframe::App for MyApp {
                             self.grid = Grid::new(self.new_height, self.new_width);
                         }
                     });
+                    ui.add_space(WIDGET_SPACING);
+                    ui.label("Heuristic");
+                    ui.vertical_centered(|ui| {
+                        ui.horizontal(|ui| {
+                            ui.selectable_value(
+                                &mut self.heuristic,
+                                Heuristic::Manhattan,
+                                "Manhattan",
+                            );
+                            ui.selectable_value(
+                                &mut self.heuristic,
+                                Heuristic::Diagonal,
+                                "Diagonal",
+                            );
+                            ui.selectable_value(
+                                &mut self.heuristic,
+                                Heuristic::Euclidean,
+                                "Euclidean",
+                            );
+                        });
+                    });
+                    ui.end_row();
                     ui.add_space(WIDGET_SPACING);
                     ui.checkbox(&mut self.grid.allow_diagonal, "Move Diagonally");
                     ui.add_space(WIDGET_SPACING);
