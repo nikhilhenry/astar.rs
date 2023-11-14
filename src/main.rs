@@ -23,6 +23,8 @@ fn main() {
     });
 }
 
+// deploy to github pages
+
 #[cfg(not(target_arch = "wasm32"))]
 fn main() {
     let icon_data = eframe::IconData::try_from_png_bytes(include_bytes!("assets/icon.png")).ok();
