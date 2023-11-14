@@ -2,7 +2,7 @@ use eframe::egui::{Context, Sense};
 use eframe::{egui, Frame};
 use path_finding::frame_history::FrameHistory;
 use path_finding::node::{Node, NodeType};
-use path_finding::Grid;
+use path_finding::{Grid, Heuristic};
 
 #[cfg(target_arch = "wasm32")]
 fn main() {
@@ -43,13 +43,6 @@ enum CursorType {
     Goal,
     Obstacle,
     Start,
-}
-
-#[derive(Debug, PartialEq)]
-enum Heuristic {
-    Manhattan,
-    Diagonal,
-    Euclidean,
 }
 
 trait NodeColor {
@@ -171,7 +164,7 @@ impl eframe::App for MyApp {
                     ui.add_space(WIDGET_SPACING);
                     ui.add_enabled_ui(self.grid.is_ready(), |ui| {
                         if ui.button("Find Path").clicked() {
-                            self.grid.solve();
+                            self.grid.solve(&self.heuristic);
                         }
                     });
                     ui.separator();

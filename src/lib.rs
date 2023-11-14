@@ -12,6 +12,13 @@ use std::collections::{BinaryHeap, HashMap};
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
+#[derive(Debug, PartialEq)]
+pub enum Heuristic {
+    Manhattan,
+    Diagonal,
+    Euclidean,
+}
+
 pub struct Grid {
     height: usize,
     width: usize,
@@ -163,7 +170,7 @@ impl Grid {
         self.path = Some(path_pos);
     }
 
-    pub fn solve(&mut self) {
+    pub fn solve(&mut self, heuristic: &Heuristic) {
         let start_pos = self.start.clone();
         let Some(start_pos) = start_pos else {
             panic!("no start position");
@@ -173,6 +180,12 @@ impl Grid {
             panic!("no goal position")
         };
 
+        let heuristic: fn(&Position, &Position) -> usize = match heuristic {
+            Heuristic::Manhattan => position::manhattan_distance,
+            Heuristic::Euclidean => position::euclidean_distance,
+            Heuristic::Diagonal => position::diagonal_distance,
+        };
+
         let goal = self.get_index_from_pos(&goal_pos);
 
         let mut open_set = BinaryHeap::new();
@@ -180,7 +193,7 @@ impl Grid {
             .nodes
             .get(&start_pos)
             .expect("must be valid start position");
-        let start_h_cost = position::euclid_distance(&start_pos, &goal_pos);
+        let start_h_cost = heuristic(&start_pos, &goal_pos);
         start_node.borrow_mut().h_cost = start_h_cost;
         start_node.borrow_mut().g_cost = 0;
         start_node.borrow_mut().f_cost = start_h_cost;
@@ -224,7 +237,7 @@ impl Grid {
                     continue; // this way would have been a worse path
                 }
                 let g_cost = temp_g_cost;
-                let h_cost = position::euclid_distance(&pos, &goal_pos);
+                let h_cost = heuristic(&pos, &goal_pos);
                 let f_cost = g_cost + h_cost;
                 neighbour.borrow_mut().g_cost = g_cost;
                 neighbour.borrow_mut().h_cost = h_cost;

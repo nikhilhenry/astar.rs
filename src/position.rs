@@ -1,3 +1,4 @@
+use std::cmp;
 use std::hash::Hash;
 use std::ops::Add;
 
@@ -6,10 +7,22 @@ pub struct Position {
     pub x: i32,
     pub y: i32,
 }
-pub fn euclid_distance(from: &Position, to: &Position) -> usize {
+pub fn euclidean_distance(from: &Position, to: &Position) -> usize {
+    let x_dist = (from.x - to.x).pow(2);
+    let y_dist = (from.y - to.y).pow(2);
+    (f32::sqrt((x_dist + y_dist) as f32) * 10.0) as usize
+}
+
+pub fn manhattan_distance(from: &Position, to: &Position) -> usize {
     let x_dist = (from.x - to.x).abs();
     let y_dist = (from.y - to.y).abs();
     (x_dist + y_dist) as usize
+}
+
+pub fn diagonal_distance(from: &Position, to: &Position) -> usize {
+    let x_dist = (from.x - to.x).abs();
+    let y_dist = (from.y - to.y).abs();
+    cmp::max(x_dist, y_dist) as usize
 }
 
 impl Position {
