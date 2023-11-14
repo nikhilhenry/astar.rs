@@ -139,6 +139,7 @@ impl eframe::App for MyApp {
                     ui.label("Heuristic");
                     ui.vertical_centered(|ui| {
                         ui.horizontal(|ui| {
+                            ui.add_space(12.0);
                             ui.selectable_value(
                                 &mut self.heuristic,
                                 Heuristic::Manhattan,
