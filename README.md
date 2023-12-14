@@ -5,7 +5,7 @@ A blazingly-fast [A-Star](https://en.wikipedia.org/wiki/A*_search_algorithm) sea
 Allows for dynamic grid sizes and user-chosen heuristics. Runs natively on MacOS, Linux and the web using WASM!
 
 ## Demo
-The WASM-based demo of the app is hosted [here](https:/nikhilhenry.github.io/astar.rs).
+The WASM-based demo of the app is hosted [here](https://nikhilhenry.github.io/astar.rs).
 
 ## Installation
 
